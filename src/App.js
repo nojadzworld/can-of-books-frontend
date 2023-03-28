@@ -4,6 +4,9 @@ import Footer from './Footer';
 import BestBooks from './BestBooks';
 import About from './About'
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+// **** PERSONAL CSS GOES HERE******
+
 import {
   BrowserRouter as Router,
   Routes,
