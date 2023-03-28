@@ -18,3 +18,11 @@ Hours of Operations: Immediately after lunch we will start out until completion 
 4. Self Motivated
 5. verbal communication
 6. Love helping others We can apply all strengths in a manner to best help exercise our understanding of the group project. Dajon Develop strengths: Tool proficiency Alex Develop strengths: Code proficiency Day to Day development will be handle as a unit, one will drive and one will navigate so we can ensure that the knowledge is equal on both sides. This will also handle one person doing more work than the other. To help each other understand where we are in the code and what is going on we will frequently ask each other questions to help engrain knowledge.
+
+## Time Estimates
+
+Name of feature: Starting Can of Books
+Estimate of time needed to complete: 4hrs
+Start time: 1:15
+Finish time: 7:07
+Actual time needed to complete: 5hrs 52mins
