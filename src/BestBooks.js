@@ -1,30 +1,35 @@
 import React from 'react';
 import axios from 'axios';
-import {Carousel, Button} from 'react-bootstrap';
+import { Carousel, Button } from 'react-bootstrap';
 import AddModal from './AddModal';
+import './BestBooks.css';
+
 
 class BestBooks extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       books: [],
-      modalPop: false
+      modalPop: false,
+      showForm: false,
+      bookToBeUpdated: null
     }
   }
 
-  handleCloseModal = () =>{
+  handleCloseModal = () => {
     this.setState({
-      modalPop: false
+      modalPop: false,
+      bookToBeUpdated: null
     })
   }
 
-  handleOpenModal = () =>{
+  handleOpenModal = () => {
     console.log('handleOpenModal')
     this.setState({
       modalPop: true,
-      
+
     })
-  }  
+  }
 
 
 
@@ -58,7 +63,7 @@ class BestBooks extends React.Component {
       let updatedBooks = this.state.books.filter(book => book._id !== id);
 
       this.setState({
-        cats: updatedBooks
+        books: updatedBooks
       })
 
     } catch (error) {
@@ -66,22 +71,22 @@ class BestBooks extends React.Component {
     }
   }
 
-  handleBookSubmit = (event) => {
-    event.preventDefault();
+  // handleBookSubmit = (event) => {
+  //   event.preventDefault();
 
-    // TODO: Build a cat object based off of the form data
-    let bookObj = {
-      Title: event.target.Title.value,
-      Description: event.target.Description.value,
-      newYorkBestseller: event.target.newYorkBestseller.checked,
-      
-    }
 
-    this.postBook(bookObj);
-    this.handleCloseModal();
-  }
+  //   let bookObj = {
+  //     Title: event.target.Title.value,
+  //     Description: event.target.Description.value,
+  //     newYorkBestseller: event.target.newYorkBestseller.checked,
 
- // *** HANDLER #2 - POST TO THE DATABASE
+  //   }
+
+  //   this.postBook(bookObj);
+  //   this.handleCloseModal();
+  // }
+
+  // *** HANDLER #2 - POST TO THE DATABASE
   postBook = async (bookObj) => {
     try {
       // TODO: build the url, use axios and add the cat
@@ -92,10 +97,33 @@ class BestBooks extends React.Component {
       let createdBook = await axios.post(url, bookObj)
 
       this.setState({
-        books : [...this.state.books, createdBook.data]
+        books: [...this.state.books, createdBook.data],
+        showForm: false
       })
-      
+
     } catch (error) {
+      console.log(error.message)
+    }
+  }
+
+
+  updateBook = async (bookObjToUpdate) => {
+    try {
+      let url = `${process.env.REACT_APP_SERVER}/book/${bookObjToUpdate._id}`
+
+      let updatedBook = await axios.put(url, bookObjToUpdate)
+
+      let updatedBookArray = this.state.books.map(existingBook => {
+        return existingBook._id === bookObjToUpdate._id
+          ? updatedBook.data
+          : existingBook
+      })
+      this.setState({
+        books: updatedBookArray,
+        showForm: false
+      })
+    } catch (error) {
+
       console.log(error.message)
     }
   }
@@ -104,12 +132,19 @@ class BestBooks extends React.Component {
     this.getBooks();
   }
 
+  bookToBeUpdated = (bookToBeUpdated) => {
+    this.setState({
+      bookToBeUpdated,
+      modalPop: true
+    })
+    console.log('bookToBeUpdated', this.state.bookToBeUpdated)
 
+  }
 
   render() {
 
 
-    console.log(this.state.books)
+    // console.log(this.state.books)
 
 
 
@@ -119,32 +154,37 @@ class BestBooks extends React.Component {
     return (
       <>
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
-        <AddModal handleBookSubmit = {this.handleBookSubmit}
-        handleCloseModal = {this.handleCloseModal}
-        modalPop = {this.state.modalPop}
+
+        <AddModal postBook={this.postBook}
+          handleCloseModal={this.handleCloseModal}
+          modalPop={this.state.modalPop}
+          bookToBeUpdated={this.state.bookToBeUpdated}
+          updateBook={this.updateBook}
+
         />
 
-        <Button onClick = {this.handleOpenModal}>Add New Book</Button>
-       
+        <Button onClick={this.handleOpenModal}>Add New Book</Button>
+
         {this.state.books.length ? (
-       
-          <Carousel>
-          
+
+          <Carousel className='best-books-carousel'>
+
             {this.state.books.map((book) => {
               return (
                 <Carousel.Item key={book._id}>
 
-<img
-              className='d-block w-50'
-              src='https://via.placeholder.com/100'
-              alt=''
-            />
+                  <img
+                    className='d-block mx-auto w-50'
+                    src='https://via.placeholder.com/100'
+                    alt=''
+                  />
 
                   <h3>{book.Title}</h3>
                   <Carousel.Caption>
                     <p>{book.Description}</p>
                     <p>{book.newYorkBestseller}</p>
-                    <Button onClick={() => {this.deleteBook(book._id)}}>Delete</Button>
+                    <Button variant='danger' onClick={() => { this.deleteBook(book._id) }}>Delete</Button>
+                    <Button onClick={() => { this.bookToBeUpdated(book) }}>Update</Button>
                   </Carousel.Caption>
                 </Carousel.Item>
               )
