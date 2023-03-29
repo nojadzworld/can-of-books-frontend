@@ -55,7 +55,7 @@ class BestBooks extends React.Component {
       await axios.delete(url);
 
       // TODO: UPDATE STATE TO REMOVE THAT DELETED CAT
-      let updatedBooks = this.state.bookss.filter(book => book._id !== id);
+      let updatedBooks = this.state.books.filter(book => book._id !== id);
 
       this.setState({
         cats: updatedBooks
